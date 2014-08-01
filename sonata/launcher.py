@@ -36,6 +36,7 @@ import os
 import platform
 import threading  # needed for interactive shell
 
+_global_sonata = None
 
 def run():
     """Main entry point of Sonata"""
@@ -167,12 +168,14 @@ def run():
         Gdk.threads_enter()
         windows = application.get_windows()
 
+        global _global_sonata
         if windows:
             for window in windows:
                 window.present()
         else:
             sonata = main.Base(args)
             sonata.window.set_application(application)
+            _global_sonata = sonata
         Gdk.threads_leave()
 
     app = Gtk.Application(application_id="org.MPD.Sonata")
