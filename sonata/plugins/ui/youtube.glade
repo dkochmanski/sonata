@@ -9,12 +9,6 @@
       <!-- column-name url -->
       <column type="gchararray"/>
     </columns>
-    <data>
-      <row>
-        <col id="0">sadf</col>
-        <col id="1" translatable="yes"/>
-      </row>
-    </data>
   </object>
   <object class="GtkScrolledWindow" id="youtube_scrolledwindow">
     <property name="can_focus">False</property>
