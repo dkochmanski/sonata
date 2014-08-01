@@ -28,9 +28,9 @@ def tab_construct():
     phrase = builder.get_object('phrase')
     search = builder.get_object('search')
 
-    lambda_search = lambda *args: threading.Thread(
-        target=search_phrase,
-        args=([builder, phrase.get_text()])).start()
+    lambda_search = lambda *args: search_phrase_in_separate_thread(
+        builder,
+        [builder, phrase.get_text()])
     
     phrase.connect('activate', lambda_search)
     search.connect('clicked', lambda_search)
@@ -50,11 +50,24 @@ def trigger_row(builder):
         tree_view.get_selection().get_selected()[1], 1)
     
     launcher._global_sonata.stream_parse_and_add(value)
-        
+
+my_thread = None
+def search_phrase_in_separate_thread(builder, arguments):
+    global my_thread
+    if my_thread != None:
+        my_thread.cancel()
+
+    results = builder.get_object('results').clear()
+
+    my_thread = threading.Thread(
+        target=search_phrase,
+        args=arguments).start()
+
 def search_phrase(builder, phrase):
+    tree_view = builder.get_object('results_view')
     results = builder.get_object('results');
-    results.clear();
-    
+
+    tree_view.get_selection().unselect_all()
     process = subprocess.Popen(
         ["youtube-dl", "-fbestaudio", "--skip-download", "-ge",
          "ytsearch4:"+phrase], stdout=subprocess.PIPE)
